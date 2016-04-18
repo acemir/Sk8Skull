@@ -7,4 +7,4 @@ Game built in 64x64 resolution to participate in the LowrezJam 2016.
 Have fun.
 
 ## Release v0.1 - April 18, 2016
-* Game Intro + Sprites
+* Game Intro
