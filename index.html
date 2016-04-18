@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Sk8Skull game by Acemir #LOWREZJAM 2016</title>
+	<style>
+		
+		html, body {height:100%;}
+		html {display:table;width: 100%;}
+		body {position:relative;display:table-cell; text-align:center; vertical-align:middle;background:#000}
+		canvas {margin: 0 auto;}
+	</style>
+	<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+</head>
+<body>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.4.6/phaser.min.js"></script>
+	<script>window.Phaser || document.write('<script src="lib/phaser.min.js"><\/script>')</script>
+	<script src="states/Boot.js"></script>
+	<script src="states/Preloader.js"></script>
+	<script src="states/Game.js"></script>
+	<script type="text/javascript">
+
+		(function() {
+
+			var game = new Phaser.Game(64, 64, Phaser.AUTO, '');
+
+			//	Add the States your game has.
+			game.state.add('Boot', Sk8Skull.Boot);
+			game.state.add('Preloader', Sk8Skull.Preloader);
+			game.state.add('Game', Sk8Skull.Game);
+
+			//	Now start the Boot state.
+			game.state.start('Boot');
+		})();
+
+	</script>
+</body>
+</html>
