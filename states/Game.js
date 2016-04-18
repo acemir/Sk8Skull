@@ -48,6 +48,10 @@ Sk8Skull.Game.prototype = {
         this.game.physics.arcade.enable(this.player);
         this.player.body.gravity.y = 300;
         this.player.body.collideWorldBounds = true;
+        this.player.body.width = 17;
+        this.player.body.height = 6;
+        this.player.body.offset.x = 4;
+        this.player.body.offset.y = 19;
 
         this.animRUN = this.player.animations.add('run', [0, 1, 2, 3], 10, true);
         this.animOLLIE = this.player.animations.add('ollie', [4, 5, 6], 10, false);
@@ -60,15 +64,25 @@ Sk8Skull.Game.prototype = {
         },this);
 
         this.animOLLIE.onComplete.add(function(){
-            this.player.frame = 0;
+            this.player.jumping = false;
+            if (this.player.body.velocity.x) this.player.animations.play('run');
+            else this.player.frame = 0;
         },this);
 
         //Apply controls
         var key_UP = this.game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(this.kickflip, this);
         var key_W = this.game.input.keyboard.addKey(Phaser.Keyboard.W).onDown.add(this.kickflip, this);
         var key_SPACE = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.kickflip, this);
-		document.body.addEventListener('touchstart', function(e){player.animations.play('kickflip')});
-		document.body.addEventListener('mousedown', function(e){player.animations.play('kickflip')});
+		document.body.addEventListener('touchstart', function(e){
+            player.jumping = true;
+            player.body.velocity.x = 60;
+            player.animations.play('kickflip')
+        });
+		document.body.addEventListener('mousedown', function(e){
+            player.jumping = true;
+            player.body.velocity.x = 60;
+            player.animations.play('kickflip')
+        });
 
         this.kickflip(false);
 
@@ -82,6 +96,7 @@ Sk8Skull.Game.prototype = {
     },
 
     render: function() {
+        // this.game.debug.body(this.player);
         Sk8Skull.scaleDraw.call(this);
     },
 
@@ -90,6 +105,13 @@ Sk8Skull.Game.prototype = {
         if (isUser) this.player.body.velocity.x = 60;
         else this.player.body.velocity.x = 0;
     	this.player.animations.play('kickflip');
+    },
+
+    ollie: function(isUser) {
+        this.player.jumping = true;
+        if (isUser) this.player.body.velocity.x = 60;
+        else this.player.body.velocity.x = 0;
+        this.player.animations.play('ollie');
     },
     
     generateMounds: function() {
@@ -117,6 +139,7 @@ Sk8Skull.Game.prototype = {
             player.body.velocity.x = 60
         } else {
             player.body.velocity.x = 0
+            player.frame = 0
         }
     }
 }
