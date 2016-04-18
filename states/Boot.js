@@ -1,5 +1,5 @@
 var Sk8Skull = {
-    pixel: { scale: 8, canvas: null, context: null, width: 0, height: 0 },
+    pixel: { scale: 1, canvas: null, context: null, width: 0, height: 0 },
     scaleBind: function() {
         this.game.input.keyboard.addKey(Phaser.Keyboard.ONE).onDown.add(Sk8Skull.scaleGame, this, 0 , 1);
         this.game.input.keyboard.addKey(Phaser.Keyboard.TWO).onDown.add(Sk8Skull.scaleGame, this, 0 , 2);
