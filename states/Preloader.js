@@ -11,6 +11,7 @@ Sk8Skull.Preloader.prototype = {
         this.load.image('title_0', 'images/title_0.png');
         this.load.image('title_1', 'images/title_1.png');
         this.load.image('ground', 'images/ground.png');
+        this.load.image('spikes', 'images/spikes.png');
         this.load.spritesheet('skull', 'images/skull.png', 25, 25);
     },
 
