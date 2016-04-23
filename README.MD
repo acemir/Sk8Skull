@@ -2,7 +2,7 @@
 
 EndHELLess runner with a skull skater.
 
-![Sk8Skull Screen](//raw.githubusercontent.com/acemir/sk8skull-lowrezjam2016/master/promo/skull_sk8-with-bg-animated.gif)
+![Sk8Skull Screen](https://raw.githubusercontent.com/acemir/sk8skull-lowrezjam2016/master/promo/skull_sk8-with-bg-animated.gif)
 
 [Play at itch.io](//acemir.itch.io/sk8skull)
 
