@@ -14,7 +14,7 @@
 	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
 </head>
 <body>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.4.6/phaser.min.js"></script>
+	<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.4.6/phaser.min.js"></script> -->
 	<script>window.Phaser || document.write('<script src="lib/phaser.min.js"><\/script>')</script>
 	<script src="states/Boot.js"></script>
 	<script src="states/Preloader.js"></script>
@@ -23,7 +23,7 @@
 
 		(function() {
 
-			var game = new Phaser.Game(64, 64, Phaser.AUTO, '');
+			var game = new Phaser.Game(64, 64, Phaser.CANVAS, '');
 
 			//	Add the States your game has.
 			game.state.add('Boot', Sk8Skull.Boot);

@@ -21,6 +21,16 @@ var Sk8Skull = {
     }
 };
 
+Sk8Skull.LoadingBar = function(game, parent) {
+    Phaser.Group.call(this, game, parent);
+
+    this.bar = game.add.sprite(game.world.centerX, game.world.centerY, game.add.bitmapData(game.width,1).fill(196, 207, 161, 1));
+    this.add(this.bar);
+};
+
+Sk8Skull.LoadingBar.prototype = Object.create(Phaser.Group.prototype);
+Sk8Skull.LoadingBar.prototype.constructor = Sk8Skull.LoadingBar;
+
 Sk8Skull.Boot = function (game) {
 
 };
