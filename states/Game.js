@@ -1,5 +1,16 @@
 Sk8Skull.Game = function(game) {
+        // SET MOUSE AND TOUCH CONTROLS
+        var _this = this;
+        var hammertime = new Hammer(document.body);
 
+        hammertime.get('pinch').set({ enable: true });
+
+        hammertime.on('tap', function(e){ _this.btnDown() });
+        hammertime.on('pinchstart pinchend', function(e){ Sk8Skull.pixel.actualscale = Sk8Skull.pixel.scale });
+        hammertime.on('pinchmove', function(e){ Sk8Skull.scaleGame.apply(_this, [e]) });
+
+        document.body.addEventListener('mousewheel', function(e){ Sk8Skull.scaleGame.apply(_this, [e]) } );
+        window.addEventListener('resize', function(e){ Sk8Skull.scaleGame.apply(_this, [e]) } );
 };
 
 Sk8Skull.Game.prototype = {
@@ -39,7 +50,7 @@ Sk8Skull.Game.prototype = {
         this.title_1.add(this.title_1_text);
         this.title_1.x = 27;
         this.title_1.y = 64;
-        this.add.tween(this.title_1).to({y: 32}, 600, Phaser.Easing.Cubic.Out, true, 300);
+        this.add.tween(this.title_1).to({y: 32}, 600, Phaser.Easing.Quadratic.InOut, true);
 
         // SCORE
         this.score = 0;
@@ -64,7 +75,7 @@ Sk8Skull.Game.prototype = {
         this.bestGroup.add(this.bestText);
         this.bestGroup.y = 8;
 
-        this.add.tween(this.bestGroup).to({y: 0}, 600, Phaser.Easing.Cubic.Out, true, 300);
+        this.add.tween(this.bestGroup).to({y: 0}, 300, Phaser.Easing.Quadratic.InOut, true, 300);
 
 
         // PHYSICS
@@ -76,8 +87,8 @@ Sk8Skull.Game.prototype = {
         // OBSTACLES
         this.spikesCreate();
 
-        // HERO
-        this.heroCreate();
+        // PLAYER
+        this.playerCreate();
 
         // CONTROLS
         this.controlsCreate();
@@ -87,8 +98,13 @@ Sk8Skull.Game.prototype = {
         this.platformXMax = 0;
         this.spikeXMax = 0;
 
+        // MENU JUMP
         this.menuLoop = this.game.time.events.add(Phaser.Timer.SECOND, function(){
-            !this.game.started && this.kickflip(false);
+            if (!this.game.started) {
+                this.player.body.velocity.y = -90;
+                this.player.animations.play('kickflip');
+                Sk8Skull.JUMP.play();
+            }
         }, this);
 
         Sk8Skull.scaleBind.call(this);
@@ -118,7 +134,7 @@ Sk8Skull.Game.prototype = {
                 this.scoreText.text = this.score;
                 localStorage.setItem('Sk8Skull', Math.max(Sk8Skull.bestScore,this.score));
             }
-            this.spikesCreateOne( this.spikeXMax + this.game.rnd.integerInRange(48,64*4) , this.game.world.height - 14);
+            this.spikesCreateOne( this.spikeXMax + this.game.rnd.integerInRange(48,64*4) , this.game.world.height - 15);
           }
         }, this );
 
@@ -172,8 +188,8 @@ Sk8Skull.Game.prototype = {
         var platform = this.platforms.getFirstDead();
         platform.reset( x, y );
         platform.body.immovable = true;
-        platform.body.height = 8;
-        platform.body.offset.y = 4;
+        platform.body.height = 9;
+        platform.body.offset.y = 3;
         return platform;
     },
     
@@ -183,7 +199,7 @@ Sk8Skull.Game.prototype = {
         this.spikes.createMultiple( 3, 'spike' );
 
         for( var i = 1; i < 4; i++ ) {
-            this.spikesCreateOne( this.game.world.width*(i+1), this.game.world.height - 14 );
+            this.spikesCreateOne( this.game.world.width*(i+1), this.game.world.height - 15 );
         }
     },
 
@@ -191,12 +207,13 @@ Sk8Skull.Game.prototype = {
         // this is a helper function since writing all of this out can get verbose elsewhere
         var spike = this.spikes.getFirstDead();
         spike.reset( x, y );
+        spike.body.enable = true;
+        spike.body.width = 12;
         spike.body.immovable = true;
-        spike.body.width = 14;
         return spike;
     },
 
-    heroCreate: function() {
+    playerCreate: function() {
         this.player = this.game.add.sprite(0, this.game.world.height - 46, 'skull');
 
         // track where the hero started and how much the distance has changed from that point
@@ -209,46 +226,35 @@ Sk8Skull.Game.prototype = {
         this.player.body.width = 13;
         this.player.body.height = 6;
         this.player.body.offset.x = 6;
-        this.player.body.offset.y = 19;
+        this.player.body.offset.y = 18;
         this.player.jumping = false;
         this.player.dead = false;
         this.player.score = 0;
 
-        this.animRUN = this.player.animations.add('run', [0, 1, 2, 3], 10, true);
-        this.animOLLIE = this.player.animations.add('ollie', [4, 5, 6, 10, 11, 12], 10, false);
-        this.animNOLLIE = this.player.animations.add('nollie', [13, 14, 6, 10, 11, 12], 10, false);
-        this.animKICK = this.player.animations.add('kickflip', [4, 5, 7, 8, 9, 11], 10, false);
+        this.player.animations.add('run', [2, 3, 0, 1], 10, true).onComplete.add(this.playerIdle, this);
+        this.player.animations.add('ollie', [4, 5, 6, 10, 11, 12], 10, false).onComplete.add(this.playerIdle, this);
+        this.player.animations.add('nollie', [13, 14, 6, 10, 11, 12], 10, false).onComplete.add(this.playerIdle, this);
+        this.player.animations.add('kickflip', [4, 5, 7, 8, 9, 11], 10, false).onComplete.add(this.playerIdle, this);
+    },
 
-        this.animKICK.onComplete.add(function(){
-            if (this.player.body.velocity.x && !this.player.dead) this.player.animations.play('run');
-            if (!this.game.started) this.player.frame = 0;
-        },this);
-
-        this.animOLLIE.onComplete.add(function(){
-            if (this.player.body.velocity.x && !this.player.dead) this.player.animations.play('run');
-            if (!this.game.started) this.player.frame = 0;
-        },this);
-
-        this.animNOLLIE.onComplete.add(function(){
-            if (this.player.body.velocity.x && !this.player.dead) this.player.animations.play('run');
-            if (!this.game.started) this.player.frame = 0;
-        },this);
+    playerIdle: function() {
+        if (this.player.body.velocity.x && !this.player.dead) this.player.animations.play('run');
+        if (!this.game.started) this.player.frame = 0;
     },
 
     controlsCreate: function() {
-        var _this = this;
         this.game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(this.btnDown, this);
         this.game.input.keyboard.addKey(Phaser.Keyboard.W).onDown.add(this.btnDown, this);
         this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.btnDown, this);
-        document.body.addEventListener('touchstart', function(e){ _this.btnDown(); });
-        document.body.addEventListener('mousedown', function(e){ _this.btnDown(); });
 
-        this.game.input.keyboard.addKey(Phaser.Keyboard.M).onDown.add(this.muteMusic, this);
-        this.game.input.keyboard.addKey(Phaser.Keyboard.N).onDown.add(this.noMusic, this);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.M).onDown.add(this.noMusic, this);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.N).onDown.add(this.noAudio, this);
+
+        this.game.onPause.add(this.gamePause, this);
+        this.game.onResume.add(this.gameResume, this);
     },
 
     btnDown: function() {
-        // First Player Interaction
         if (!this.game.started) {
             this.game.started = true;
             this.add.tween(this.title_0).to({y: -86}, 600, Phaser.Easing.Quadratic.InOut, true);
@@ -259,7 +265,9 @@ Sk8Skull.Game.prototype = {
 
         if (!this.player.dead && this.player.body.touching.down) {
             var stunt = this.game.rnd.pick(['ollie', 'nollie', 'kickflip']);
-            this[stunt](true);
+            this.player.body.velocity.y = -90;
+            this.player.animations.play(stunt);
+            Sk8Skull.JUMP.play();
         }
 
         if (this.player.dead && this.player.body.velocity.x == 0) {
@@ -267,40 +275,26 @@ Sk8Skull.Game.prototype = {
         }
     },
 
-    muteMusic: function() {
-        Sk8Skull.MUSIC[( Sk8Skull.MUSIC.isPlaying ? 'stop': 'play')]();
-    },
-
     noMusic: function() {
         Sk8Skull.MUSIC.mute = !Sk8Skull.MUSIC.mute;
+    },
+
+    noAudio: function() {
         Sk8Skull.JUMP.mute = !Sk8Skull.JUMP.mute;
+        Sk8Skull.DIE.mute = !Sk8Skull.DIE.mute;
     },
 
-    kickflip: function(isUser) {
-        this.player.jumping = true;
-        if (this.player.body.touching.down||!isUser) this.player.body.velocity.y = -90;
-        this.player.animations.play('kickflip');
-        Sk8Skull.JUMP.play();
+    gamePause: function() {
+        Sk8Skull.MUSIC.isPlaying && Sk8Skull.MUSIC.pause();
     },
 
-    ollie: function(isUser) {
-        this.player.jumping = true;
-        if (this.player.body.touching.down||!isUser) this.player.body.velocity.y = -90;
-        this.player.animations.play('ollie');
-        Sk8Skull.JUMP.play();
+    gameResume: function() {
+        !Sk8Skull.MUSIC.mute && Sk8Skull.MUSIC.resume();
     },
 
-    nollie: function(isUser) {
-        this.player.jumping = true;
-        if (this.player.body.touching.down||!isUser) this.player.body.velocity.y = -90;
-        this.player.animations.play('nollie');
-        Sk8Skull.JUMP.play();
-    },
-
-    isJumping: function(player, mound) {
+    isJumping: function(player, spike) {
         if (!player.jumping) {
-            // GAME OVER
-            mound.body.destroy();
+            spike.body.enable = false;
             player.dead = true;
             Sk8Skull.DIE.play();
             Sk8Skull.MUSIC.stop();

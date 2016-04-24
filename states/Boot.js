@@ -1,5 +1,5 @@
 var Sk8Skull = {
-    pixel: { scale: 1, canvas: null, context: null, width: 0, height: 0 },
+    pixel: { actualscale: 1, scale: 1,  canvas: null, context: null, width: 0, height: 0 },
     scaleBind: function() {
         this.game.input.keyboard.addKey(Phaser.Keyboard.ONE).onDown.add(Sk8Skull.scaleGame, this, 0 , 1);
         this.game.input.keyboard.addKey(Phaser.Keyboard.TWO).onDown.add(Sk8Skull.scaleGame, this, 0 , 2);
@@ -9,9 +9,33 @@ var Sk8Skull = {
         this.game.input.keyboard.addKey(Phaser.Keyboard.SIX).onDown.add(Sk8Skull.scaleGame, this, 0 , 6);
         this.game.input.keyboard.addKey(Phaser.Keyboard.SEVEN).onDown.add(Sk8Skull.scaleGame, this, 0 , 7);
         this.game.input.keyboard.addKey(Phaser.Keyboard.EIGHT).onDown.add(Sk8Skull.scaleGame, this, 0 , 8);
+        this.game.input.keyboard.addKey(Phaser.Keyboard.NINE).onDown.add(Sk8Skull.scaleGame, this, 0 , 9);
+        
+        this.game.input.keyboard.addKey(Phaser.Keyboard.EQUALS).onDown.add(Sk8Skull.scaleGame, this, 0 , '+');
+        this.game.input.keyboard.addKey(Phaser.Keyboard.UNDERSCORE).onDown.add(Sk8Skull.scaleGame, this, 0 , '-');
+
+        this.game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_ADD).onDown.add(Sk8Skull.scaleGame, this, 0 , '+');
+        this.game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_SUBTRACT).onDown.add(Sk8Skull.scaleGame, this, 0 , '-');
     },
-    scaleGame: function(key,ammount) {
-        Sk8Skull.pixel.scale = ammount;
+    scaleGame: function(e,ammount) {
+        if (e.type == 'mousewheel') {
+            Sk8Skull.pixel.scale = (e.wheelDelta >= 0 ? Sk8Skull.pixel.scale + 1 : Sk8Skull.pixel.scale - 1);
+        }
+        if (ammount) {
+            if (typeof ammount == 'number') Sk8Skull.pixel.scale = ammount;
+            else if (ammount == '+') Sk8Skull.pixel.scale++;
+            else if (ammount == '-') Sk8Skull.pixel.scale--;
+        }
+        if (e.distance) {
+            var normalizedDistance = Math.floor(e.distance/10);
+            Sk8Skull.pixel.scale = Sk8Skull.pixel.actualscale + (e.additionalEvent == 'pinchout' ? normalizedDistance : -normalizedDistance ) || 1;
+        }
+        if (window.innerWidth < this.game.width * Sk8Skull.pixel.scale || window.innerHeight < this.game.height * Sk8Skull.pixel.scale) {
+            Sk8Skull.pixel.scale = Math.floor(Math.min(window.innerWidth, window.innerHeight)/this.game.width);
+        }
+        if (Sk8Skull.pixel.scale < 1) {
+            Sk8Skull.pixel.scale = 1;
+        }
         Sk8Skull.pixel.width = Sk8Skull.pixel.canvas.width = this.game.width * Sk8Skull.pixel.scale;
         Sk8Skull.pixel.height = Sk8Skull.pixel.canvas.height = this.game.height * Sk8Skull.pixel.scale;
         Phaser.Canvas.setSmoothingEnabled(Sk8Skull.pixel.context, false);
@@ -24,7 +48,7 @@ var Sk8Skull = {
 Sk8Skull.LoadingBar = function(game, parent) {
     Phaser.Group.call(this, game, parent);
 
-    this.bar = game.add.sprite(game.world.centerX, game.world.centerY, game.add.bitmapData(game.width,1).fill(196, 207, 161, 1));
+    this.bar = game.add.sprite(32, 35, game.add.bitmapData(game.width,2).fill(0, 0, 0, 0));
     this.add(this.bar);
 };
 
@@ -66,7 +90,7 @@ Sk8Skull.Boot.prototype = {
         this.input.maxPointers = 1;
 
         //  Phaser will automatically pause if the browser tab the game is in loses focus. You can disable that here:
-        this.stage.disableVisibilityChange = true;
+        // this.stage.disableVisibilityChange = true;
 
         //  So now let's start the real preloader going
         this.state.start('Preloader');

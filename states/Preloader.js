@@ -11,10 +11,10 @@ Sk8Skull.Preloader.prototype = {
         this.loadingBar.bar.anchor.setTo(0.5, 0.5);
 
         // this.load.onLoadComplete.add(this.loadComplete, this);
-
+        this.load.image('acemir', 'images/acemir.png');
         this.load.audio('music', ['media/music.ogg', 'media/music.mp3']);
-        this.load.audio('jump', ['media/jump.wav']);
-        this.load.audio('die', ['media/die.wav']);
+        this.load.audio('jump', ['media/jump.ogg', 'media/jump.mp3']);
+        this.load.audio('die', ['media/die.ogg', 'media/die.mp3']);
         this.load.bitmapFont('carrier_command', 'images/carrier_command.png', 'images/carrier_command.xml');
         this.load.image('bg_0', 'images/bg_0.png');
         this.load.image('bg_1', 'images/bg_1.png');
@@ -27,7 +27,9 @@ Sk8Skull.Preloader.prototype = {
     },
 
     create: function() {
+        this.game.stage.backgroundColor = '#4d533c';
         this.loadingBar.bar.cropEnabled = false;
+        this.add.sprite(32,32,'acemir').anchor.setTo(0.5, 0.5);
     },
 
     update: function() {
