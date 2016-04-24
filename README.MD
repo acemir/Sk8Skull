@@ -3,11 +3,12 @@
 ![Sk8Skull Screen](https://raw.githubusercontent.com/acemir/sk8skull-lowrezjam2016/master/promo/skull_sk8-with-bg-animated.gif)
 
 [Play at itch.io](//acemir.itch.io/sk8skull)
+
 [Play at acemir.github.io](//acemir.github.io/sk8skull)
 
 Skate with a skull while mastering stunts.
 
-Game built in 64x64 resolution to participate in the [#LOWREZJAM2016] (//itch.io/jam/lowrezjam2016).
+Game built in 64x64 resolution to participate in the [#LOWREZJAM 2016] (//itch.io/jam/lowrezjam2016).
 
 ## CONTROLS:
 
@@ -19,7 +20,7 @@ Game built in 64x64 resolution to participate in the [#LOWREZJAM2016] (//itch.io
 ## TOOLS:
 
 * **[ GAME ENGINE ] ::** [Phaser](//phaser.io/)
-* **[ PIXEL ART ] ::** [Aseprite](//www.aseprite.org/)
+* **[ GRAPHICS ] ::** [Aseprite](//www.aseprite.org/)
 
 ## CREDITS:
 
