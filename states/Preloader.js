@@ -12,6 +12,7 @@ Sk8Skull.Preloader.prototype = {
 
         // this.load.onLoadComplete.add(this.loadComplete, this);
         this.load.image('acemir', 'images/acemir.png');
+        this.load.spritesheet('loader', 'images/loader.png', 13, 13, 4);
         this.load.audio('music', ['media/music.ogg', 'media/music.mp3']);
         this.load.audio('jump', ['media/jump.ogg', 'media/jump.mp3']);
         this.load.audio('die', ['media/die.ogg', 'media/die.mp3']);
@@ -27,9 +28,18 @@ Sk8Skull.Preloader.prototype = {
     },
 
     create: function() {
+        Sk8Skull.pixel.canvas.style['visibility'] = 'visible';
         this.game.stage.backgroundColor = '#4d533c';
         this.loadingBar.bar.cropEnabled = false;
-        this.add.sprite(32,32,'acemir').anchor.setTo(0.5, 0.5);
+        this.logoSprt = this.add.sprite(32,31,'acemir');
+        this.logoSprt.anchor.setTo(0.5, 0.5);
+        this.loaderSprt = this.add.sprite(32,72,'loader');
+        this.loaderSprt.anchor.setTo(0.5, 0.5);
+        this.loaderSprt.animations.add('loader' );
+        this.loaderSprt.animations.play('loader', 12, true);
+
+        this.add.tween(this.logoSprt).to({y: 24}, 120, Phaser.Easing.Quadratic.InOut, true );
+        this.add.tween(this.loaderSprt).to({y: 48}, 120, Phaser.Easing.Quadratic.InOut, true);
     },
 
     update: function() {

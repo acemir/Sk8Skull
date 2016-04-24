@@ -78,6 +78,7 @@ Sk8Skull.Boot.prototype = {
 
         //  Add the scaled canvas to the DOM
         Phaser.Canvas.addToDOM(Sk8Skull.pixel.canvas);
+        Sk8Skull.pixel.canvas.style['visibility'] = 'hidden';
 
         //  Disable smoothing on the scaled canvas
         Phaser.Canvas.setSmoothingEnabled(Sk8Skull.pixel.context, false);

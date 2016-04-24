@@ -134,7 +134,7 @@ Sk8Skull.Game.prototype = {
                 this.scoreText.text = this.score;
                 localStorage.setItem('Sk8Skull', Math.max(Sk8Skull.bestScore,this.score));
             }
-            this.spikesCreateOne( this.spikeXMax + this.game.rnd.integerInRange(48,64*4) , this.game.world.height - 15);
+            this.spikesCreateOne( this.spikeXMax + this.game.rnd.integerInRange(56,64*4) , this.game.world.height - 15);
           }
         }, this );
 
@@ -197,9 +197,10 @@ Sk8Skull.Game.prototype = {
         this.spikes = this.game.add.group();
         this.spikes.enableBody = true;
         this.spikes.createMultiple( 3, 'spike' );
+        console.log(this.game.world.width);
 
         for( var i = 1; i < 4; i++ ) {
-            this.spikesCreateOne( this.game.world.width*(i+1), this.game.world.height - 15 );
+            this.spikesCreateOne( (this.game.width + 8) * (i+1), this.game.world.height - 15 );
         }
     },
 
@@ -260,7 +261,7 @@ Sk8Skull.Game.prototype = {
             this.add.tween(this.title_0).to({y: -86}, 600, Phaser.Easing.Quadratic.InOut, true);
             this.add.tween(this.title_1).to({y: -32}, 600, Phaser.Easing.Quadratic.InOut, true);
             this.add.tween(this.scoreGroup).to({y: 0}, 600, Phaser.Easing.Quadratic.InOut, true, 300);
-            this.player.body.velocity.x = 60;
+            this.player.body.velocity.x = 75;
         }
 
         if (!this.player.dead && this.player.body.touching.down) {
