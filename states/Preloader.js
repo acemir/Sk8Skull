@@ -38,8 +38,8 @@ Sk8Skull.Preloader.prototype = {
         this.loaderSprt.animations.add('loader' );
         this.loaderSprt.animations.play('loader', 12, true);
 
-        this.add.tween(this.logoSprt).to({y: 24}, 120, Phaser.Easing.Quadratic.InOut, true );
-        this.add.tween(this.loaderSprt).to({y: 48}, 120, Phaser.Easing.Quadratic.InOut, true);
+        this.add.tween(this.logoSprt).to({y: 25}, 120, Phaser.Easing.Quadratic.InOut, true );
+        this.add.tween(this.loaderSprt).to({y: 46}, 120, Phaser.Easing.Quadratic.InOut, true);
     },
 
     update: function() {

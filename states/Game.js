@@ -10,7 +10,7 @@ Sk8Skull.Game = function(game) {
         hammertime.on('pinchmove', function(e){ Sk8Skull.scaleGame.apply(_this, [e]) });
 
         document.body.addEventListener('mousewheel', function(e){ Sk8Skull.scaleGame.apply(_this, [e]) } );
-        window.addEventListener('resize', function(e){ Sk8Skull.scaleGame.apply(_this, [e]) } );
+        window.addEventListener('resize', function(e){ !!_this.game && Sk8Skull.scaleGame.apply(_this, [e]) } );
 };
 
 Sk8Skull.Game.prototype = {
@@ -53,20 +53,20 @@ Sk8Skull.Game.prototype = {
         this.add.tween(this.title_1).to({y: 32}, 600, Phaser.Easing.Quadratic.InOut, true);
 
         // SCORE
-        this.score = 0;
-        this.scoreText = this.game.add.bitmapText(this.game.width/2, 2, 'carrier_command', '' + this.score, 10);
-        this.scoreText.tint = 0xc4cfa1;
-        this.scoreText.anchor.x = 0.5;
-        this.scoreText.fixedToCamera = true;
+        this.radical = 0;
+        this.radicalText = this.game.add.bitmapText(this.game.width/2, 2, 'carrier_command', '' + this.radical, 10);
+        this.radicalText.tint = 0xc4cfa1;
+        this.radicalText.anchor.x = 0.5;
+        this.radicalText.fixedToCamera = true;
         
-        this.scoreGroup = this.game.add.group();
-        this.scoreGroup.add(this.scoreText);
-        this.scoreGroup.y = -32;
+        this.radicalGroup = this.game.add.group();
+        this.radicalGroup.add(this.radicalText);
+        this.radicalGroup.y = -32;
 
-        Sk8Skull.bestScore = localStorage.getItem('Sk8Skull') || 0;
-        localStorage.setItem('Sk8Skull',Sk8Skull.bestScore);
+        Sk8Skull.bestRadical = localStorage.getItem('Sk8Skull') || 0;
+        localStorage.setItem('Sk8Skull',Sk8Skull.bestRadical);
 
-        this.bestText = this.game.add.bitmapText(this.game.width - 2, this.game.height - 8, 'carrier_command', 'HI:' + localStorage.getItem('Sk8Skull') || Sk8Skull.bestScore, 5);
+        this.bestText = this.game.add.bitmapText(this.game.width - 2, this.game.height - 8, 'carrier_command', 'HI:' + localStorage.getItem('Sk8Skull') || Sk8Skull.bestRadical, 5);
         this.bestText.tint = 0x1f1f1f;
         this.bestText.anchor.x = 1;
         this.bestText.fixedToCamera = true;
@@ -127,21 +127,21 @@ Sk8Skull.Game.prototype = {
 
         this.spikes.forEachAlive( function( elem ) {
           this.spikeXMax = Math.max( this.spikeXMax, elem.x );
-          if( elem.x + 16 < this.camera.x ) {
+          if( elem.x + elem.width < this.camera.x ) {
             elem.kill();
             if (!this.player.dead) {
-                this.score += 1;
-                this.scoreText.text = this.score;
-                localStorage.setItem('Sk8Skull', Math.max(Sk8Skull.bestScore,this.score));
+                this.radical += 1;
+                this.radicalText.text = this.radical;
+                localStorage.setItem('Sk8Skull', Math.max(Sk8Skull.bestRadical,this.radical));
             }
-            this.spikesCreateOne( this.spikeXMax + this.game.rnd.integerInRange(56,64*4) , this.game.world.height - 15);
+            this.spikesCreateOne( this.spikeXMax + this.game.rnd.integerInRange(56,64*4) , this.game.world.height - 13, (this.radical > 21 - 2) ? 21 : (this.radical > 15 - 2) ? 19 : (this.radical > 9 - 2) ? 17 :(this.radical > 3 - 2 ) ? 15 : 11);
           }
         }, this );
 
 
         this.platforms.forEachAlive( function( elem ) {
           this.platformXMax = Math.max( this.platformXMax, elem.x );
-          if( elem.x + 16 < this.camera.x ) {
+          if( elem.x + elem.width < this.camera.x ) {
             elem.kill();
             this.platformsCreateOne( this.platformXMax + 16 , this.game.world.height - 12);
           }
@@ -188,28 +188,30 @@ Sk8Skull.Game.prototype = {
         var platform = this.platforms.getFirstDead();
         platform.reset( x, y );
         platform.body.immovable = true;
-        platform.body.height = 9;
-        platform.body.offset.y = 3;
+        platform.body.height = 8;
+        platform.body.offset.y = 4;
         return platform;
     },
     
     spikesCreate: function() {
         this.spikes = this.game.add.group();
         this.spikes.enableBody = true;
-        this.spikes.createMultiple( 3, 'spike' );
-        console.log(this.game.world.width);
+
+        // this.spikes.createMultiple( 3, 'spike' );
 
         for( var i = 1; i < 4; i++ ) {
-            this.spikesCreateOne( (this.game.width + 8) * (i+1), this.game.world.height - 15 );
+            this.spikes.add(this.game.add.tileSprite((this.game.width + 8) * (i+1), this.game.world.height - 13, 11, 9, 'spike'));
+            // this.spikesCreateOne( (this.game.width + 8) * (i+1), this.game.world.height - 13 );
         }
     },
 
-    spikesCreateOne: function( x, y ) {
+    spikesCreateOne: function( x, y, width ) {
         // this is a helper function since writing all of this out can get verbose elsewhere
         var spike = this.spikes.getFirstDead();
         spike.reset( x, y );
+        spike.width = width || 11;
+        spike.body.width = width || 11;
         spike.body.enable = true;
-        spike.body.width = 12;
         spike.body.immovable = true;
         return spike;
     },
@@ -222,7 +224,7 @@ Sk8Skull.Game.prototype = {
         this.player.xChange = 0;
 
         this.game.physics.arcade.enable(this.player);
-        this.player.body.gravity.y = 300;
+        this.player.body.gravity.y = 280;
         // this.player.body.collideWorldBounds = true;
         this.player.body.width = 13;
         this.player.body.height = 6;
@@ -230,7 +232,7 @@ Sk8Skull.Game.prototype = {
         this.player.body.offset.y = 18;
         this.player.jumping = false;
         this.player.dead = false;
-        this.player.score = 0;
+        this.player.radical = 0;
 
         this.player.animations.add('run', [2, 3, 0, 1], 10, true).onComplete.add(this.playerIdle, this);
         this.player.animations.add('ollie', [4, 5, 6, 10, 11, 12], 10, false).onComplete.add(this.playerIdle, this);
@@ -260,7 +262,7 @@ Sk8Skull.Game.prototype = {
             this.game.started = true;
             this.add.tween(this.title_0).to({y: -86}, 600, Phaser.Easing.Quadratic.InOut, true);
             this.add.tween(this.title_1).to({y: -32}, 600, Phaser.Easing.Quadratic.InOut, true);
-            this.add.tween(this.scoreGroup).to({y: 0}, 600, Phaser.Easing.Quadratic.InOut, true, 300);
+            this.add.tween(this.radicalGroup).to({y: 0}, 600, Phaser.Easing.Quadratic.InOut, true, 300);
             this.player.body.velocity.x = 75;
         }
 
