@@ -57,7 +57,15 @@ Sk8Skull.Preloader.prototype = {
        Sk8Skull.MUSIC = this.add.audio('music',.1,true);
        Sk8Skull.JUMP = this.add.audio('jump',.3,false);
        Sk8Skull.DIE = this.add.audio('die',.2,false);
-       this.state.start('Game');
+       this.startGame();
+       // this.state.start('Game');
+    },
+
+    startGame: function(){
+        this.add.tween(this.logoSprt).to({y: -32}, 360, Phaser.Easing.Quadratic.Out, true);
+        this.add.tween(this.loaderSprt.scale).to({x: 0, y: 0}, 480, Phaser.Easing.Exponential.Out, true).onComplete.add(function(){
+            this.state.start('Game');
+        }, this);
     }
 
 };
