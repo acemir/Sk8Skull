@@ -217,7 +217,7 @@ Sk8Skull.Game.prototype = {
     },
 
     playerCreate: function() {
-        this.player = this.game.add.sprite(0, this.game.world.height - 46, 'skull');
+        this.player = this.game.add.sprite(0, this.game.world.height - 44, 'skull');
 
         // track where the hero started and how much the distance has changed from that point
         this.player.xOrig = this.player.x;
