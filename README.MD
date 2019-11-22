@@ -4,7 +4,7 @@
 
 [Play at itch.io](//acemir.itch.io/sk8skull)
 
-[Play at acemir.github.io](//acemir.github.io/sk8skull)
+[Play at acemir.github.io](//acemir.github.io/Sk8Skull)
 
 Skate with a skull while mastering stunts.
 
