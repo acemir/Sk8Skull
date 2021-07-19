@@ -114,6 +114,8 @@ Sk8Skull.Game.prototype = {
 
     update: function() {
 
+        this.player.x = Math.round(this.player.x);
+
         this.world.setBounds( 0, 0, this.game.width + this.player.xChange, this.game.height + 12 );
 
         this.cameraYMax = Math.max(this.cameraYMax, this.player.y);
