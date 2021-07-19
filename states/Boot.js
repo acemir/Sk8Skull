@@ -30,14 +30,16 @@ Sk8Skull = {
             var normalizedDistance = Math.floor(e.distance/10);
             Sk8Skull.pixel.scale = Sk8Skull.pixel.actualscale + (e.additionalEvent == 'pinchout' ? normalizedDistance : -normalizedDistance ) || 1;
         }
-        if (window.innerWidth < this.game.width * Sk8Skull.pixel.scale || window.innerHeight < this.game.height * Sk8Skull.pixel.scale) {
-            Sk8Skull.pixel.scale = Math.floor(Math.min(window.innerWidth, window.innerHeight)/this.game.width);
+        if (this.game) {
+            if (window.innerWidth < this.game.width * Sk8Skull.pixel.scale || window.innerHeight < this.game.height * Sk8Skull.pixel.scale) {
+                Sk8Skull.pixel.scale = Math.floor(Math.min(window.innerWidth, window.innerHeight)/this.game.width);
+            }
+            if (Sk8Skull.pixel.scale < 1) {
+                Sk8Skull.pixel.scale = 1;
+            }
+            Sk8Skull.pixel.width = Sk8Skull.pixel.canvas.width = this.game.width * Sk8Skull.pixel.scale;
+            Sk8Skull.pixel.height = Sk8Skull.pixel.canvas.height = this.game.height * Sk8Skull.pixel.scale;
         }
-        if (Sk8Skull.pixel.scale < 1) {
-            Sk8Skull.pixel.scale = 1;
-        }
-        Sk8Skull.pixel.width = Sk8Skull.pixel.canvas.width = this.game.width * Sk8Skull.pixel.scale;
-        Sk8Skull.pixel.height = Sk8Skull.pixel.canvas.height = this.game.height * Sk8Skull.pixel.scale;
         Phaser.Canvas.setSmoothingEnabled(Sk8Skull.pixel.context, false);
     },
     scaleDraw: function(){
