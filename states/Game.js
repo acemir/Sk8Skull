@@ -135,8 +135,11 @@ Sk8Skull.Game.prototype = {
                 this.radical += 1;
                 this.radicalText.text = this.radical;
                 localStorage.setItem('Sk8Skull', Math.max(Sk8Skull.bestRadical,this.radical));
+                if (this.radical % 4 === 0 && this.player.body.velocity.x < 80) {
+                    this.player.body.velocity.x += 1;
+                }
             }
-            this.spikesCreateOne( this.spikeXMax + this.game.rnd.integerInRange(56,64*4) , this.game.world.height - 13, (this.radical > 21 - 2) ? 21 : (this.radical > 15 - 2) ? 19 : (this.radical > 9 - 2) ? 17 :(this.radical > 3 - 2 ) ? 15 : 11);
+            this.spikesCreateOne( this.spikeXMax + this.game.rnd.integerInRange(56,64*4) , this.game.world.height - 13, (this.radical > 24 - 2) ? 21 : (this.radical > 18 - 2) ? 19 : (this.radical > 12 - 2) ? 17 :(this.radical > 6 - 2 ) ? 15 : 11);
           }
         }, this );
 
@@ -260,6 +263,7 @@ Sk8Skull.Game.prototype = {
     },
 
     btnDown: function() {
+        if (!this.game) return;
         if (!this.game.started) {
             this.game.started = true;
             this.add.tween(this.title_0).to({y: -86}, 600, Phaser.Easing.Quadratic.InOut, true);
